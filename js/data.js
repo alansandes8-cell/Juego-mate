@@ -107,7 +107,7 @@
   const PREMIUM = [
     { id: 'vidas3', name: 'Pack de 3 vidas', desc: 'Si no llegás a la meta, repetís el día.', price: 'US$ 0,99' },
     { id: 'bolsa', name: 'Bolsa de plata', desc: 'Te suma $ 5.000 (ajustado por inflación).', price: 'US$ 1,99' },
-    { id: 'sinads', name: 'Sin publicidad', desc: 'Chau anuncios para siempre.', price: 'US$ 2,99' },
+    { id: 'sinads', name: 'Sin publicidad', desc: 'Chau anuncios entre días, para siempre.', price: 'US$ 2,99' },
   ];
 
   // Novedades que no son productos

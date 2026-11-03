@@ -40,7 +40,8 @@
       Object.entries(D.EQUIPO).forEach(([id, d]) => out.push({ kind: 'equipo', id, d, icon: id === 'termo' ? 'termo' : id, name: d.name, desc: d.desc, owned: !!run.own[id], price: price(d.price) }));
     } else if (tab === 'premium') {
       out.push({ kind: 'reward', id: 'reward', icon: 'tv', name: 'Ver un anuncio', desc: 'Mirá un anuncio cortito y ganá 1 vida. Una vez por día.', done: run.rewardDay === run.day });
-      D.PREMIUM.forEach((p) => out.push({ kind: 'premium', id: p.id, d: p, icon: p.id === 'vidas3' ? 'vida' : p.id === 'bolsa' ? 'plata' : 'tv', name: p.name, desc: p.desc, priceLabel: p.price, owned: p.id === 'sinads' && run.adsOff }));
+      D.PREMIUM.forEach((p) => out.push({ kind: 'premium', id: p.id, d: p, icon: p.id === 'vidas3' ? 'vida' : p.id === 'bolsa' ? 'plata' : 'tv', name: p.name, desc: p.desc, priceLabel: MP.Pay.priceLabel(p), owned: p.id === 'sinads' && run.adsOff }));
+      out.push({ kind: 'restore', id: 'restore', icon: 'plata', name: 'Restaurar compras', desc: '¿Compraste "Sin publicidad" en otro teléfono? Recuperalo acá.' });
     }
     const gap = 8, h = out.length > 7 ? 92 : 102;
     out.forEach((c, i) => Object.assign(c, { x: 24, y: 236 + i * (h + gap), w: W - 48, h }));
@@ -52,6 +53,7 @@
     const bx = c.x + c.w - 150, by = c.y + (c.h - 56) / 2;
     if (c.d && c.d.minDay && locked(c.d)) return [{ id: 'locked', x: bx, y: by, w: 136, h: 56, label: 'Día ' + c.d.minDay, color: '#8d8d8d', size: 22, disabled: true }];
     if (c.kind === 'reward') return [{ id: 'reward', x: bx, y: by, w: 136, h: 56, label: c.done ? 'Mañana' : 'Ver', color: '#1e63b5', size: 24, disabled: c.done }];
+    if (c.kind === 'restore') return [{ id: 'restore', x: bx, y: by, w: 136, h: 56, label: 'Restaurar', color: '#455a64', size: 20 }];
     if (c.kind === 'premium') return [{ id: 'premium', x: bx, y: by, w: 136, h: 56, label: c.owned ? '¡Listo!' : c.priceLabel, color: c.owned ? '#2e7d32' : '#7b1fa2', size: 20, disabled: c.owned }];
     if (c.kind === 'mate' && c.owned) {
       const b = [];
@@ -138,7 +140,7 @@
       const lk = c.d && c.d.minDay && locked(c.d);
       const owned = c.owned || (c.kind === 'mate' && run.equip.mates.includes(c.id));
       rr(ctx, c.x, c.y + 5, c.w, c.h, 18); ctx.fillStyle = 'rgba(0,0,0,.35)'; ctx.fill();
-      rr(ctx, c.x, c.y, c.w, c.h, 18); ctx.fillStyle = lk ? '#cfc6b6' : owned ? '#dcedc8' : c.kind === 'premium' || c.kind === 'reward' ? '#f3e5f5' : '#fbf0d9'; ctx.fill();
+      rr(ctx, c.x, c.y, c.w, c.h, 18); ctx.fillStyle = lk ? '#cfc6b6' : owned ? '#dcedc8' : c.kind === 'premium' || c.kind === 'reward' || c.kind === 'restore' ? '#f3e5f5' : '#fbf0d9'; ctx.fill();
       ctx.lineWidth = 3; ctx.strokeStyle = owned ? '#2e7d32' : '#8d6e63'; ctx.stroke();
       rr(ctx, c.x + 10, c.y + 10, c.h - 20, c.h - 20, 14); ctx.fillStyle = '#f0dfbd'; ctx.fill();
       ctx.save(); if (lk) ctx.globalAlpha = 0.45;
@@ -203,6 +205,10 @@
         if (b.id === 'usebomb') { run.equip.bombilla = c.id; return msg('Ahora usás: ' + c.name, '#7CFC8A'); }
         if (b.id === 'reward') {
           MP.Ads.rewarded('vida-extra', () => { run.lives++; run.rewardDay = run.day; msg('¡+1 vida!', '#7CFC8A'); Sfx.yay(); });
+          return;
+        }
+        if (b.id === 'restore') {
+          MP.Pay.restore((ok) => { if (ok && localStorage.getItem('mp_adsoff')) run.adsOff = true; msg(ok ? 'Compras restauradas' : 'No hay compras para restaurar', ok ? '#7CFC8A' : '#ffcc80'); MP.ui.saveRun(); });
           return;
         }
         if (b.id === 'premium') {

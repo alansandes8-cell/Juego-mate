@@ -1,0 +1,28 @@
+{
+  "name": "mate-perfecto",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Mate Perfecto: el juego del cebador. Web, Android e iOS.",
+  "scripts": {
+    "build": "node tools/build-web.js",
+    "sync": "node tools/build-web.js && npx cap sync",
+    "android": "node tools/build-web.js && npx cap sync android && npx cap open android",
+    "ios": "node tools/build-web.js && npx cap sync ios && npx cap open ios",
+    "assets:art": "node tools/generate-assets.js",
+    "assets:icons": "npx @capacitor/assets generate --iconBackgroundColor \"#1d6b3a\" --iconBackgroundColorDark \"#1d6b3a\" --splashBackgroundColor \"#1d1209\" --splashBackgroundColorDark \"#1d1209\""
+  },
+  "dependencies": {
+    "@capacitor-community/admob": "^8.0.0",
+    "@capacitor/android": "^8.0.0",
+    "@capacitor/app": "^8.0.0",
+    "@capacitor/core": "^8.0.0",
+    "@capacitor/ios": "^8.0.0",
+    "@capacitor/splash-screen": "^8.0.0",
+    "@capacitor/status-bar": "^8.0.0",
+    "@revenuecat/purchases-capacitor": "^14.0.0"
+  },
+  "devDependencies": {
+    "@capacitor/assets": "^4.0.0",
+    "@capacitor/cli": "^8.0.0"
+  }
+}

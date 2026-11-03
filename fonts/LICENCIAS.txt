@@ -1,0 +1,4 @@
+Fuentes incluidas en el juego (licencia SIL Open Font License 1.1, uso libre incluso comercial):
+- Lilita One — Juan Montoreano (https://fonts.google.com/specimen/Lilita+One)
+- Nunito — Vernon Adams, Cyreal, Jacques Le Bailly (https://fonts.google.com/specimen/Nunito)
+Texto de la licencia: https://openfontlicense.org

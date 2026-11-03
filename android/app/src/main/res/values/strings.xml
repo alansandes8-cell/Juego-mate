@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Mate Perfecto</string>
+    <string name="title_activity_main">Mate Perfecto</string>
+    <string name="package_name">com.mateperfecto.juego</string>
+    <string name="custom_url_scheme">com.mateperfecto.juego</string>
+</resources>

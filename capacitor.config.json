@@ -1,0 +1,11 @@
+{
+  "appId": "com.mateperfecto.juego",
+  "appName": "Mate Perfecto",
+  "webDir": "www",
+  "backgroundColor": "#1d1209",
+  "android": { "backgroundColor": "#1d1209" },
+  "ios": { "backgroundColor": "#1d1209", "contentInset": "never" },
+  "plugins": {
+    "SplashScreen": { "launchShowDuration": 1200, "backgroundColor": "#1d1209", "showSpinner": false, "androidScaleType": "CENTER_CROP" }
+  }
+}

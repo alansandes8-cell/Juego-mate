@@ -4,7 +4,8 @@ Juego web 2D (celu y PC) para cebar el mate perfecto. Bien argento.
 
 - Abrí `index.html` en el navegador (o serví la carpeta con cualquier servidor estático).
 - Sin dependencias ni build: Canvas 2D + WebAudio, todo dibujado y sintetizado por código.
-- Instalable como app (PWA) cuando se sirve por HTTPS.
+- Instalable como app (PWA) cuando se sirve por HTTPS, y como app nativa de Android e iOS (Capacitor).
+- **Para publicar en Google Play y App Store, seguí [PUBLICAR.md](PUBLICAR.md).**
 
 ## Qué tiene
 

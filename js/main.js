@@ -210,6 +210,7 @@
     y += 96;
     b.push({ id: 'mus', x: 160, y, w: 192, h: 62, label: 'Música', sub: Sfx.musicOn ? 'Sí' : 'No', color: '#6d4c41', size: 22 });
     b.push({ id: 'sfx', x: 368, y, w: 192, h: 62, label: 'Sonido', sub: Sfx.sfxOn ? 'Sí' : 'No', color: '#6d4c41', size: 22 });
+    b.push({ id: 'priv', x: 260, y: 1196, w: 200, h: 40, label: 'Privacidad', color: '#3e2723', size: 18, r: 12 });
     return b;
   };
 
@@ -230,7 +231,26 @@
     }
     text(ctx, 'El juego del cebador', W / 2, 712, { size: 30, color: '#fff3b0', stroke: '#3b1d0e', sw: 7 });
     for (const b of TITLE_BTNS()) Gx.button(ctx, b, t);
-    if (best.day > 0) text(ctx, 'Récord: llegaste al día ' + best.day, W / 2, 1250, { size: 22, font: U.FONT_B, weight: '900', color: '#ffd54f' });
+    if (best.day > 0) text(ctx, 'Récord: llegaste al día ' + best.day, W / 2, 1258, { size: 20, font: U.FONT_B, weight: '900', color: '#ffd54f' });
+  }
+
+  function showPrivacy() {
+    const url = (window.MP_CONFIG || {}).privacyUrl || 'privacidad.html';
+    modal({
+      title: 'Privacidad',
+      lines: ['No pedimos cuenta ni datos personales.', 'La partida se guarda solo en tu teléfono.', 'Los anuncios (Google AdMob) pueden usar', 'un identificador del dispositivo.', 'Política completa: ' + (url.startsWith('http') ? url.replace(/^https?:\/\//, '') : 'en la ficha de la tienda')],
+      buttons: url.startsWith('http')
+        ? [{ label: 'Ver política completa', color: '#1e63b5', cb: () => window.open(url, '_blank') }, { label: 'Cerrar', color: '#6d4c41' }]
+        : [{ label: 'Cerrar', color: '#6d4c41' }],
+    });
+  }
+
+  // Botón "atrás" de Android
+  function back() {
+    if (modalQ) { modalQ = null; return; }
+    if (scene === 'play') { const G = Play.state; if (G && !G.intro && !G.ending) { G.paused = !G.paused; Play.up(); } return; }
+    if (scene === 'how') { scene = 'title'; return; }
+    if (scene === 'title') { const App = window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App; if (App) App.exitApp(); }
   }
 
   function titleDown(x, y) {
@@ -242,6 +262,7 @@
       else if (b.id === 'how') scene = 'how';
       else if (b.id === 'mus') Sfx.toggleMusic();
       else if (b.id === 'sfx') Sfx.toggleSfx();
+      else if (b.id === 'priv') showPrivacy();
       return;
     }
   }
@@ -474,7 +495,9 @@
 
   // ---------------- escalado ----------------
   function resize() {
-    const vw = window.innerWidth, vh = window.innerHeight;
+    const cs = getComputedStyle(document.body);
+    const vw = window.innerWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+    const vh = window.innerHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
     const scale = Math.min(vw / W, vh / H);
     const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
     view.scale = scale; view.dpr = dpr; view.k = scale * dpr;
@@ -534,7 +557,7 @@
     drawWall, drawTable, drawBackdrop,
     resetCaches() { wallCache = null; },
     goSummary, goTitle() { saveRun(); scene = 'title'; },
-    startChallenge, modal, fakeAd, saveRun,
+    startChallenge, modal, fakeAd, saveRun, back,
     toastGlobal(s) { toastG = { text: s, t0: t }; },
     get run() { return run; },
     get scene() { return scene; },
@@ -544,11 +567,13 @@
   resize();
   MP.Ads.init();
   const go = () => requestAnimationFrame((n) => { last = n; frame(n); });
-  if (document.fonts && document.fonts.ready) {
-    Promise.race([document.fonts.ready, new Promise((r) => setTimeout(r, 1500))]).then(() => { wallCache = null; go(); });
+  if (document.fonts && document.fonts.load) {
+    const fl = Promise.all([document.fonts.load('40px "Lilita One"'), document.fonts.load('900 20px Nunito'), document.fonts.load('700 20px Nunito')]).catch(() => {});
+    Promise.race([fl, new Promise((r) => setTimeout(r, 2000))]).then(() => { wallCache = null; go(); });
   } else go();
 
-  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+  const native = !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
+  if (!native && 'serviceWorker' in navigator && location.protocol.startsWith('http')) {
     window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
   }
 })();

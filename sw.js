@@ -1,6 +1,7 @@
 /* Service worker: red primero, caché como respaldo (para jugar offline) */
-const CACHE = 'mate-perfecto-v2';
-const FILES = ['./', 'index.html', 'style.css', 'manifest.webmanifest', 'icon.svg',
+const CACHE = 'mate-perfecto-v3';
+const FILES = ['./', 'index.html', 'style.css', 'manifest.webmanifest', 'icon.svg', 'icon-512.png',
+  'fonts/lilita-one-latin.woff2', 'fonts/lilita-one-latin-ext.woff2', 'fonts/nunito-latin.woff2', 'fonts/nunito-latin-ext.woff2',
   'js/config.js', 'js/gfx.js', 'js/audio.js', 'js/data.js', 'js/economy.js', 'js/ads.js',
   'js/game.js', 'js/truco.js', 'js/mini.js', 'js/shop.js', 'js/main.js'];
 

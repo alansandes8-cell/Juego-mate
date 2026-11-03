@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><title>Generador de arte</title>
+<link rel="stylesheet" href="../style.css">
+<style>html,body{overflow:visible;height:auto;display:block;padding:0;background:transparent}canvas{box-shadow:none;border-radius:0}</style>
+</head><body>
+<canvas id="c"></canvas>
+<script src="../js/gfx.js"></script>
+<script src="../js/data.js"></script>
+<script>
+  // Dibuja el arte para tiendas: ?w=icon|fg|bg|splash|feature
+  const what = new URLSearchParams(location.search).get('w') || 'icon';
+  const G = MP.G, U = MP.U;
+  const sizes = { icon: [1024, 1024], fg: [1024, 1024], bg: [1024, 1024], splash: [2732, 2732], feature: [1024, 500], pwa: [512, 512] };
+  const [W, H] = sizes[what];
+  const c = document.getElementById('c'); c.width = W; c.height = H; c.style.width = W + 'px'; c.style.height = H + 'px';
+  const x = c.getContext('2d');
+  function green(x, w, h) {
+    const g = x.createRadialGradient(w / 2, h * 0.4, 50, w / 2, h / 2, Math.max(w, h) * 0.75);
+    g.addColorStop(0, '#2a8a4f'); g.addColorStop(1, '#0f3f24');
+    x.fillStyle = g; x.fillRect(0, 0, w, h);
+  }
+  function border(x, w, h, m) {
+    x.lineWidth = m * 0.5; x.strokeStyle = '#e0b23a'; G.rr(x, m, m, w - 2 * m, h - 2 * m, m * 2); x.stroke();
+    x.lineWidth = m * 0.2; x.strokeStyle = '#c0392b'; G.rr(x, m * 1.9, m * 1.9, w - 3.8 * m, h - 3.8 * m, m * 1.6); x.stroke();
+    const k = m * 1.6;
+    G.curl(x, m * 3.2, m * 3.2, k, 1); G.curl(x, w - m * 3.2, m * 3.2, k, -1);
+  }
+  function mate(x, cx, cy, s) {
+    G.drawMate(x, cx, cy, s, { yerba: 0.78, freshR: 1, bombilla: true, water: 0.92, herb: true }, 1.2, { kind: 'imperial' });
+    x.fillStyle = 'rgba(255,255,255,.55)';
+    [[0.05, -270, 26], [0.12, -330, 34], [0.02, -395, 40]].forEach(([dx, dy, r]) => { x.beginPath(); x.arc(cx + 60 * s + dx * 400 * s, cy + dy * s, r * s, 0, U.TAU); x.fill(); });
+  }
+  function go() {
+    if (what === 'icon' || what === 'pwa') {
+      const k = W / 1024;
+      green(x, W, H); border(x, W, H, 40 * k);
+      mate(x, W / 2 - 30 * k, H / 2 + 120 * k, 2.25 * k);
+    } else if (what === 'bg') {
+      green(x, W, H);
+    } else if (what === 'fg') {
+      // contenido dentro del círculo seguro (66% central) para íconos adaptativos de Android
+      mate(x, W / 2 - 22, H / 2 + 92, 1.55);
+    } else if (what === 'splash') {
+      x.fillStyle = '#1d1209'; x.fillRect(0, 0, W, H);
+      const cx = W / 2, cy = H / 2;
+      mate(x, cx - 50, cy + 260, 3.1);
+      G.fileteTitle(x, 'MATE', cx, cy - 640, 260, 0);
+      G.fileteTitle(x, 'PERFECTO', cx, cy - 400, 205, 1);
+    } else if (what === 'feature') {
+      green(x, W, H); border(x, W, H, 18);
+      mate(x, 800, 330, 1.05);
+      G.fileteTitle(x, 'MATE', 360, 175, 118, 0);
+      G.fileteTitle(x, 'PERFECTO', 360, 300, 92, 1);
+      G.text(x, 'Cebá, cobrá y que no se lave', 360, 400, { size: 34, color: '#fff3b0', stroke: '#0d3b1e', sw: 7 });
+    }
+    document.title = 'listo';
+  }
+  Promise.all([document.fonts.load('100px "Lilita One"'), document.fonts.load('900 40px Nunito')]).then(() => setTimeout(go, 100));
+</script>
+</body></html>
