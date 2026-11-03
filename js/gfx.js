@@ -196,18 +196,42 @@
     ctx.strokeStyle = '#6d747b'; ctx.lineWidth = 2 * s; ctx.stroke();
 
     // cuerpo calabaza
+    const kind = opt.kind || (opt.calabaza ? 'calabaza' : 'calabaza');
+    const KC = {
+      calabaza: ['#c98a4a', '#7a3e18', '#3d1c0b'], madera: ['#e0b07a', '#a8703c', '#5e3a1a'],
+      vidrio: ['#5a3a26', '#3a2416', '#1e120a'], termico: ['#ffffff', '#b8c0c8', '#5d646b'],
+      imperial: ['#d49656', '#8a4a1e', '#40200c'], camionero: ['#9a6a3c', '#5e3a1a', '#2c1808'],
+    }[kind] || ['#c98a4a', '#7a3e18', '#3d1c0b'];
     gourdPath(ctx, x, y, s);
     const body = ctx.createRadialGradient(x - 45 * s, y - 20 * s, 10 * s, x, y + 10 * s, 150 * s);
-    body.addColorStop(0, opt.calabaza ? '#c98a4a' : '#b0713a');
-    body.addColorStop(0.55, '#7a3e18');
-    body.addColorStop(1, '#3d1c0b');
+    body.addColorStop(0, KC[0]); body.addColorStop(0.55, KC[1]); body.addColorStop(1, KC[2]);
     ctx.fillStyle = body; ctx.fill();
-    ctx.lineWidth = 3 * s; ctx.strokeStyle = '#2a1206'; ctx.stroke();
+    ctx.lineWidth = 3 * s; ctx.strokeStyle = kind === 'termico' ? '#3d4349' : '#2a1206'; ctx.stroke();
+    if (kind === 'madera') {
+      ctx.save(); gourdPath(ctx, x, y, s); ctx.clip();
+      ctx.strokeStyle = 'rgba(90,50,20,.35)'; ctx.lineWidth = 2 * s;
+      for (let i = -4; i <= 4; i++) { ctx.beginPath(); ctx.moveTo(x + i * 26 * s, y - 110 * s); ctx.bezierCurveTo(x + i * 30 * s + 12 * s, y - 20 * s, x + i * 26 * s - 12 * s, y + 40 * s, x + i * 28 * s, y + 130 * s); ctx.stroke(); }
+      ctx.restore();
+    }
+    if (kind === 'vidrio') {
+      ctx.save(); gourdPath(ctx, x, y, s); ctx.clip();
+      ctx.strokeStyle = '#e8c88a'; ctx.lineWidth = 2.5 * s; ctx.setLineDash([6 * s, 6 * s]);
+      ctx.beginPath(); ctx.moveTo(x, y - 110 * s); ctx.lineTo(x, y + 130 * s); ctx.stroke(); ctx.setLineDash([]);
+      ctx.restore();
+    }
+    if (kind === 'imperial') {
+      ctx.save(); gourdPath(ctx, x, y, s); ctx.clip();
+      ctx.fillStyle = silverGrad(ctx, x - 140 * s, x + 140 * s);
+      ctx.fillRect(x - 150 * s, y - 104 * s, 300 * s, 34 * s);
+      ctx.fillStyle = 'rgba(90,95,100,.6)';
+      for (let i = -6; i <= 6; i++) { ctx.beginPath(); ctx.arc(x + i * 18 * s, y - 86 * s, 3 * s, 0, TAU); ctx.fill(); }
+      ctx.restore();
+    }
 
     // guarda de cuero con costura + florcita fileteada
     ctx.save();
     gourdPath(ctx, x, y, s); ctx.clip();
-    ctx.fillStyle = '#5a2c10';
+    ctx.fillStyle = kind === 'termico' ? '#1d6b3a' : '#5a2c10';
     ctx.fillRect(x - 150 * s, y + 38 * s, 300 * s, 30 * s);
     ctx.strokeStyle = '#e8c88a'; ctx.lineWidth = 2.5 * s; ctx.setLineDash([7 * s, 6 * s]);
     ctx.beginPath(); ctx.moveTo(x - 150 * s, y + 43 * s); ctx.lineTo(x + 150 * s, y + 43 * s); ctx.stroke();
@@ -218,7 +242,7 @@
     ctx.beginPath(); ctx.ellipse(x - 62 * s, y - 25 * s, 22 * s, 55 * s, 0.35, 0, TAU); ctx.fill();
     ctx.restore();
     // florcita (fileteado) sobre la panza
-    if (s > 0.5) {
+    if (s > 0.5 && kind !== 'termico') {
       for (let i = 0; i < 5; i++) {
         const a = (i / 5) * TAU + 0.3;
         ctx.fillStyle = i % 2 ? '#c0392b' : '#e0b23a';
@@ -319,7 +343,7 @@
       ctx.lineCap = 'round';
       ctx.strokeStyle = '#5d646b'; ctx.lineWidth = 11 * s;
       ctx.beginPath(); ctx.moveTo(bx0, by0); ctx.lineTo(bx1, by1); ctx.quadraticCurveTo(bx1 + 4 * s, by2 + 6 * s, bx2, by2); ctx.stroke();
-      ctx.strokeStyle = m.alpaca ? '#f1d98a' : '#d9dee3'; ctx.lineWidth = 7 * s;
+      ctx.strokeStyle = m.gold ? '#ffd54f' : m.alpaca ? '#f1d98a' : '#d9dee3'; ctx.lineWidth = 7 * s;
       ctx.stroke();
       ctx.strokeStyle = 'rgba(255,255,255,.8)'; ctx.lineWidth = 2.2 * s;
       ctx.beginPath(); ctx.moveTo(bx0 - 2 * s, by0 - 4 * s); ctx.lineTo(bx1 - 2 * s, by1 + 4 * s); ctx.stroke();
@@ -507,7 +531,7 @@
     ctx.fillStyle = shirt; ctx.fill();
     if (p.stripes) {
       ctx.save(); rr(ctx, x - 74, base - 122, 148, 190, 46); ctx.clip();
-      ctx.fillStyle = '#ffffff';
+      ctx.fillStyle = p.stripes === true ? '#ffffff' : p.stripes;
       for (let i = -3; i <= 3; i++) ctx.fillRect(x + i * 40 - 9, base - 130, 18, 200);
       ctx.restore();
     }
@@ -519,6 +543,17 @@
     // escote
     ctx.fillStyle = U.shade(p.skin, -0.06);
     ctx.beginPath(); ctx.moveTo(x - 22, base - 122); ctx.lineTo(x, base - 96); ctx.lineTo(x + 22, base - 122); ctx.fill();
+    if (p.tie) {
+      ctx.fillStyle = p.tie;
+      ctx.beginPath(); ctx.moveTo(x - 8, base - 118); ctx.lineTo(x + 8, base - 118); ctx.lineTo(x + 12, base - 50); ctx.lineTo(x, base - 36); ctx.lineTo(x - 12, base - 50); ctx.closePath(); ctx.fill();
+    }
+    if (p.phone) {
+      ctx.save(); ctx.translate(x + 52, base - 70); ctx.rotate(-0.25);
+      rr(ctx, -12, -22, 24, 42, 5); ctx.fillStyle = '#222'; ctx.fill();
+      rr(ctx, -9, -18, 18, 32, 3); ctx.fillStyle = '#7ec8f2'; ctx.fill();
+      ctx.restore();
+      ctx.fillStyle = p.skin; ctx.beginPath(); ctx.arc(x + 50, base - 52, 11, 0, TAU); ctx.fill();
+    }
     if (p.scarf) {
       ctx.fillStyle = p.scarf;
       ctx.beginPath(); ctx.moveTo(x - 34, base - 124); ctx.lineTo(x + 34, base - 124); ctx.lineTo(x, base - 82); ctx.closePath(); ctx.fill();
@@ -574,6 +609,21 @@
         ctx.beginPath(); ctx.ellipse(hx + 34, hy - 18, 42, 10, 0.08, 0, TAU); ctx.fill();
         ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(hx - 8, hy - 42, 9, 0, TAU); ctx.fill();
         ctx.fillStyle = hair; ctx.fillRect(hx - 50, hy - 18, 10, 14); ctx.fillRect(hx + 40, hy - 18, 10, 14);
+        break;
+      case 'beanie':
+        ctx.fillStyle = hair; ctx.fillRect(hx - 50, hy - 20, 10, 16); ctx.fillRect(hx + 40, hy - 20, 10, 16);
+        ctx.fillStyle = p.hat;
+        ctx.beginPath(); ctx.ellipse(hx, hy - 24, 54, 44, 0, Math.PI, TAU); ctx.fill();
+        rr(ctx, hx - 55, hy - 30, 110, 18, 8); ctx.fillStyle = U.shade(p.hat, -0.2); ctx.fill();
+        ctx.fillStyle = U.shade(p.hat, 0.3); ctx.beginPath(); ctx.arc(hx, hy - 70, 11, 0, TAU); ctx.fill();
+        break;
+      case 'fedora':
+        ctx.fillStyle = hair; ctx.fillRect(hx - 50, hy - 22, 10, 16); ctx.fillRect(hx + 40, hy - 22, 10, 16);
+        ctx.fillStyle = p.hat;
+        ctx.beginPath(); ctx.ellipse(hx, hy - 30, 74, 14, 0, 0, TAU); ctx.fill();
+        rr(ctx, hx - 42, hy - 76, 84, 50, 16); ctx.fill();
+        ctx.fillStyle = '#7a1f1f'; ctx.fillRect(hx - 42, hy - 44, 84, 9);
+        ctx.fillStyle = 'rgba(255,255,255,.12)'; ctx.beginPath(); ctx.ellipse(hx - 14, hy - 64, 16, 6, 0, 0, TAU); ctx.fill();
         break;
       case 'boina':
         ctx.fillStyle = hair; ctx.fillRect(hx - 50, hy - 22, 10, 18); ctx.fillRect(hx + 40, hy - 22, 10, 18);
@@ -672,13 +722,15 @@
   }
 
   // ---------------- íconos de herramientas ----------------
-  function iconYerba(ctx, x, y, s) {
+  function iconYerba(ctx, x, y, s, brand) {
+    const B = brand && MP.DATA && MP.DATA.YERBAS[brand];
     ctx.save(); ctx.translate(x, y); ctx.scale(s, s);
     rr(ctx, -26, -36, 52, 72, 6); ctx.fillStyle = '#f2e6c4'; ctx.fill();
     ctx.lineWidth = 3; ctx.strokeStyle = '#6b4a22'; ctx.stroke();
-    ctx.fillStyle = '#c0392b'; ctx.fillRect(-26, -14, 52, 22);
-    text(ctx, 'YERBA', 0, -3, { size: 12, color: '#fff' });
-    ctx.fillStyle = '#e0b23a'; ctx.beginPath(); ctx.moveTo(-26, -36); ctx.lineTo(0, -46); ctx.lineTo(26, -36); ctx.fill();
+    ctx.fillStyle = B ? B.pack : '#c0392b'; ctx.fillRect(-26, -14, 52, 22);
+    const nm = B ? B.name.toUpperCase() : 'YERBA';
+    text(ctx, nm, 0, -3, { size: nm.length > 7 ? 9 : 12, color: B ? B.band : '#fff' });
+    ctx.fillStyle = B ? B.band : '#e0b23a'; ctx.beginPath(); ctx.moveTo(-26, -36); ctx.lineTo(0, -46); ctx.lineTo(26, -36); ctx.fill();
     leaf(ctx, -10, 22, 22, -0.4, '#2e7d32');
     leaf(ctx, 2, 22, 18, -1.2, '#43a047');
     ctx.restore();
@@ -696,21 +748,24 @@
     ctx.beginPath(); ctx.moveTo(8, -8); ctx.lineTo(30, -38); ctx.stroke();
     ctx.restore();
   }
-  function iconYuyo(ctx, x, y, s) {
+  function iconYuyo(ctx, x, y, s, kind) {
+    const Y = kind && MP.DATA && MP.DATA.YUYOS[kind];
     ctx.save(); ctx.translate(x, y); ctx.scale(s, s);
     rr(ctx, -22, -18, 44, 52, 10); ctx.fillStyle = 'rgba(210,240,255,.7)'; ctx.fill();
     ctx.lineWidth = 3; ctx.strokeStyle = '#5a7f8f'; ctx.stroke();
     ctx.fillStyle = '#7a5a3a'; ctx.fillRect(-24, -26, 48, 10);
     for (let i = 0; i < 6; i++) leaf(ctx, -8 + (i % 3) * 8, 26 - i * 6, 18, -1.2 - i * 0.35, i % 2 ? '#3f7d3a' : '#5aa54a');
-    leaf(ctx, 0, -26, 22, -1.9, '#3f7d3a'); leaf(ctx, 0, -26, 22, -1.2, '#5aa54a');
+    leaf(ctx, 0, -26, 22, -1.9, '#3f7d3a'); leaf(ctx, 0, -26, 22, -1.2, Y ? Y.col : '#5aa54a');
+    if (Y) { rr(ctx, -20, 0, 40, 14, 3); ctx.fillStyle = '#fff8e1'; ctx.fill(); text(ctx, Y.name.toUpperCase(), 0, 7, { size: Y.name.length > 7 ? 7 : 8, font: FONT_B, weight: '900', color: '#2e5e2a' }); }
     ctx.restore();
   }
-  function iconBombilla(ctx, x, y, s, gold) {
+  function iconBombilla(ctx, x, y, s, gold, kind) {
     ctx.save(); ctx.translate(x, y); ctx.scale(s, s); ctx.rotate(0.5);
     ctx.lineCap = 'round';
     ctx.strokeStyle = '#5d646b'; ctx.lineWidth = 10;
     ctx.beginPath(); ctx.moveTo(0, 40); ctx.lineTo(0, -32); ctx.quadraticCurveTo(0, -42, -10, -44); ctx.stroke();
-    ctx.strokeStyle = gold ? '#f1d98a' : '#dfe3e7'; ctx.lineWidth = 6; ctx.stroke();
+    ctx.strokeStyle = kind === 'oro' ? '#ffd54f' : gold ? '#f1d98a' : '#dfe3e7'; ctx.lineWidth = 6; ctx.stroke();
+    if (kind === 'pico') { ctx.strokeStyle = '#5d646b'; ctx.lineWidth = 8; ctx.beginPath(); ctx.moveTo(-10, -44); ctx.quadraticCurveTo(-22, -46, -24, -36); ctx.stroke(); }
     ctx.fillStyle = gold ? '#d4a017' : '#9aa1a8';
     ctx.beginPath(); ctx.ellipse(0, 40, 9, 13, 0, 0, TAU); ctx.fill();
     ctx.restore();
@@ -733,9 +788,18 @@
     ctx.fillStyle = '#2e7d32'; ctx.fillRect(-18, 10, 36, 10);
     ctx.restore();
   }
-  function iconFor(ctx, id, x, y, s) {
+  function iconFor(ctx, id, x, y, s, extra) {
     switch (id) {
-      case 'yerba': return iconYerba(ctx, x, y, s);
+      case 'yerba': return iconYerba(ctx, x, y, s, extra);
+      case 'electrica': return drawElectric(ctx, x, y + 12 * s, s * 0.42, false, 0, 80);
+      case 'segundo': drawMate(ctx, x - 14 * s, y + 8 * s, s * 0.22, { yerba: 0.7, bombilla: true }, 0, { noShadow: true }); return drawMate(ctx, x + 16 * s, y + 10 * s, s * 0.22, { yerba: 0.7, bombilla: true, sweet: true }, 0, { noShadow: true, kind: 'madera' });
+      case 'food': return drawPlate(ctx, x, y + 10 * s, s * 0.7, extra, 6);
+      case 'yuyoKind': return iconYuyo(ctx, x, y, s, extra);
+      case 'mateKind': return drawMate(ctx, x, y + 6 * s, s * 0.28, { yerba: 0.7, bombilla: true }, 0, { noShadow: true, kind: extra });
+      case 'bombillaKind': return iconBombilla(ctx, x, y, s, extra === 'alpaca' || extra === 'oro', extra);
+      case 'vida': return iconVida(ctx, x, y, s);
+      case 'plata': return iconPlata(ctx, x, y, s);
+      case 'tv': return iconTv(ctx, x, y, s);
       case 'azucar': return iconSugar(ctx, x, y, s);
       case 'yuyo': return iconYuyo(ctx, x, y, s);
       case 'bombilla': return iconBombilla(ctx, x, y, s, false);
@@ -745,6 +809,89 @@
       case 'bizcocho': return iconBizcocho(ctx, x, y, s);
       case 'alpaca': return iconBombilla(ctx, x, y, s, true);
     }
+  }
+
+  function drawElectric(ctx, x, y, s, on, t, target) {
+    ctx.save(); ctx.translate(x, y); ctx.scale(s, s);
+    // base
+    rr(ctx, -80, 40, 160, 22, 10); ctx.fillStyle = '#2b2b2b'; ctx.fill();
+    ctx.fillStyle = on ? '#4fc3f7' : '#555'; ctx.beginPath(); ctx.arc(52, 51, 5, 0, TAU); ctx.fill();
+    // cuerpo
+    ctx.beginPath(); ctx.moveTo(-62, 40); ctx.lineTo(-54, -80); ctx.quadraticCurveTo(0, -96, 54, -80); ctx.lineTo(62, 40); ctx.closePath();
+    const g = ctx.createLinearGradient(-62, 0, 62, 0);
+    g.addColorStop(0, '#9aa3ab'); g.addColorStop(0.35, '#f4f6f8'); g.addColorStop(0.7, '#c3cad1'); g.addColorStop(1, '#7c838b');
+    ctx.fillStyle = g; ctx.fill(); ctx.strokeStyle = '#4a5056'; ctx.lineWidth = 3; ctx.stroke();
+    // visor de agua
+    rr(ctx, -40, -60, 16, 86, 8); ctx.fillStyle = on ? 'rgba(79,195,247,.85)' : 'rgba(150,180,200,.6)'; ctx.fill();
+    // pico
+    ctx.beginPath(); ctx.moveTo(48, -70); ctx.lineTo(86, -86); ctx.lineTo(84, -72); ctx.lineTo(54, -52); ctx.closePath(); ctx.fillStyle = '#b3bac2'; ctx.fill(); ctx.stroke();
+    // manija
+    ctx.strokeStyle = '#2b2b2b'; ctx.lineWidth = 14; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(-58, -60); ctx.quadraticCurveTo(-104, -30, -60, 20); ctx.stroke();
+    // tapa
+    ctx.fillStyle = '#2b2b2b'; ctx.beginPath(); ctx.ellipse(0, -86, 48, 10, 0, 0, TAU); ctx.fill();
+    // display
+    rr(ctx, -6, -30, 52, 30, 6); ctx.fillStyle = '#10202a'; ctx.fill();
+    text(ctx, Math.round(target) + '°', 20, -15, { size: 18, color: on ? '#4fc3f7' : '#678' });
+    ctx.restore();
+  }
+
+  function drawPlate(ctx, x, y, s, kind, n) {
+    ctx.save(); ctx.translate(x, y); ctx.scale(s, s);
+    ctx.fillStyle = 'rgba(40,20,5,.25)'; ctx.beginPath(); ctx.ellipse(4, 8, 66, 18, 0, 0, TAU); ctx.fill();
+    ctx.fillStyle = '#fafafa'; ctx.beginPath(); ctx.ellipse(0, 0, 64, 18, 0, 0, TAU); ctx.fill();
+    ctx.strokeStyle = '#3a6ea5'; ctx.lineWidth = 3; ctx.beginPath(); ctx.ellipse(0, 0, 54, 13, 0, 0, TAU); ctx.stroke();
+    const F = MP.DATA && MP.DATA.FOODS[kind];
+    const col = F ? F.col : '#e8b866';
+    const k = Math.min(n, 9);
+    for (let i = 0; i < k; i++) {
+      const row = i < 4 ? 0 : i < 7 ? 1 : 2;
+      const inRow = row === 0 ? 4 : row === 1 ? 3 : 2;
+      const idx = row === 0 ? i : row === 1 ? i - 4 : i - 7;
+      const px = (idx - (inRow - 1) / 2) * 26, py = -4 - row * 12;
+      ctx.save(); ctx.translate(px, py);
+      if (kind === 'medialunas') {
+        ctx.fillStyle = col; ctx.beginPath(); ctx.arc(0, 4, 15, Math.PI, TAU); ctx.lineTo(10, 4); ctx.arc(0, 4, 8, 0, Math.PI, true); ctx.closePath(); ctx.fill();
+        ctx.strokeStyle = U.shade(col, -0.35); ctx.lineWidth = 1.5; ctx.stroke();
+        ctx.fillStyle = 'rgba(255,240,180,.7)'; ctx.fillRect(-6, -8, 4, 3);
+      } else if (kind === 'facturas') {
+        ctx.fillStyle = col; ctx.beginPath(); ctx.ellipse(0, 0, 14, 9, 0, 0, TAU); ctx.fill();
+        ctx.fillStyle = i % 2 ? '#c62828' : '#8d5524'; ctx.beginPath(); ctx.arc(0, -2, 4.5, 0, TAU); ctx.fill();
+        ctx.strokeStyle = U.shade(col, -0.35); ctx.lineWidth = 1.5; ctx.beginPath(); ctx.ellipse(0, 0, 14, 9, 0, 0, TAU); ctx.stroke();
+      } else {
+        ctx.fillStyle = col; ctx.beginPath(); ctx.ellipse(0, 0, 13, 9, 0, 0, TAU); ctx.fill();
+        ctx.strokeStyle = U.shade(col, -0.35); ctx.lineWidth = 1.5; ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(-8, -1); ctx.lineTo(8, -1); ctx.stroke();
+      }
+      ctx.restore();
+    }
+    ctx.restore();
+  }
+
+  function iconVida(ctx, x, y, s) {
+    ctx.save(); ctx.translate(x, y); ctx.scale(s, s);
+    ctx.fillStyle = '#e53935';
+    ctx.beginPath(); ctx.moveTo(0, 26); ctx.bezierCurveTo(-40, 0, -26, -32, 0, -14); ctx.bezierCurveTo(26, -32, 40, 0, 0, 26); ctx.fill();
+    ctx.strokeStyle = '#7f1d1d'; ctx.lineWidth = 3; ctx.stroke();
+    ctx.fillStyle = 'rgba(255,255,255,.4)'; ctx.beginPath(); ctx.ellipse(-12, -8, 6, 4, -0.6, 0, TAU); ctx.fill();
+    ctx.restore();
+  }
+  function iconPlata(ctx, x, y, s) {
+    ctx.save(); ctx.translate(x, y); ctx.scale(s, s);
+    for (let i = 0; i < 3; i++) {
+      ctx.save(); ctx.translate(-8 + i * 8, 10 - i * 10); ctx.rotate(-0.2);
+      ctx.fillStyle = '#5fa85a'; ctx.fillRect(-26, -13, 52, 26); ctx.strokeStyle = '#2e5e2a'; ctx.lineWidth = 2; ctx.strokeRect(-26, -13, 52, 26);
+      ctx.fillStyle = '#2e5e2a'; ctx.beginPath(); ctx.arc(0, 0, 7, 0, TAU); ctx.fill();
+      ctx.restore();
+    }
+    ctx.restore();
+  }
+  function iconTv(ctx, x, y, s) {
+    ctx.save(); ctx.translate(x, y); ctx.scale(s, s);
+    rr(ctx, -32, -24, 64, 44, 8); ctx.fillStyle = '#263238'; ctx.fill();
+    ctx.fillStyle = '#e53935'; ctx.beginPath(); ctx.moveTo(-8, -10); ctx.lineTo(12, -2); ctx.lineTo(-8, 6); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = '#263238'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(-10, 28); ctx.lineTo(10, 28); ctx.stroke();
+    ctx.restore();
   }
 
   function thermoIcon(ctx, x, y, s, col) {
@@ -771,9 +918,10 @@
     ctx.restore();
   }
 
+  U.shortName = (p) => p.name.split(',')[0].replace(/\s*\(.*\)/, '').trim();
   MP.U = U;
   MP.G = {
     rr, text, wrap, curl, leaf, fileteTitle, button, hit, drawMate, drawPava, pavaTip, drawHornalla, drawThermo,
-    drawPerson, iconFor, thermoIcon, bubble, silverGrad,
+    drawPerson, iconFor, thermoIcon, bubble, silverGrad, drawElectric, drawPlate, iconYerba, iconYuyo,
   };
 })();
