@@ -1,0 +1,14 @@
+{
+  "name": "Mate Perfecto",
+  "short_name": "Mate",
+  "description": "Cebá el mate perfecto. Un juego bien argento.",
+  "start_url": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#1d1209",
+  "theme_color": "#1d6b3a",
+  "lang": "es-AR",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

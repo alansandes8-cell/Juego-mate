@@ -1,0 +1,26 @@
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background-color: #1d1209;
+  background-image:
+    radial-gradient(circle at 25% 25%, rgba(224, 178, 58, .10) 0 12%, transparent 13%),
+    radial-gradient(circle at 75% 75%, rgba(192, 57, 43, .10) 0 12%, transparent 13%);
+  background-size: 80px 80px;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+canvas {
+  display: block;
+  touch-action: none;
+  box-shadow: 0 0 60px rgba(0, 0, 0, .6);
+  border-radius: 6px;
+}
+noscript { color: #fff; font-family: sans-serif; }
