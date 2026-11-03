@@ -459,7 +459,7 @@
     rr(ctx, x - 22, top - 22, 44, bot - top + 44, 22); ctx.fillStyle = 'rgba(255,248,230,.95)'; ctx.fill();
     ctx.lineWidth = 3; ctx.strokeStyle = '#5a3a20'; ctx.stroke();
     // zonas
-    const zones = [[65, 74, '#7ec8e3'], [74, 83, '#5cc96b'], [83, 90, '#f2a33a'], [96, 100, '#e0412f']];
+    const zones = [[64, 72, '#7ec8e3'], [72, 80, '#5cc96b'], [80, 84, '#a5c94a'], [84, 90, '#f2a33a'], [96, 100, '#e0412f']];
     for (const [a, b, c] of zones) { ctx.fillStyle = c; ctx.fillRect(x + 9, yOf(b), 9, yOf(a) - yOf(b)); }
     // tubo
     rr(ctx, x - 8, top - 6, 14, bot - top + 6, 7); ctx.fillStyle = '#eee'; ctx.fill();

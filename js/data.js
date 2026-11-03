@@ -6,25 +6,25 @@
   // sweet / herb = probabilidad. temp = preferencia de temperatura.
   const PERSONAS = [
     { id: 'chola', name: 'Abuela Chola', skin: '#f3cfb0', hair: '#dedede', hairStyle: 'bun', shirt: '#9b5fa8', glasses: true, earrings: true,
-      sweet: 0.85, temp: 'tibio', herb: 0.45, patience: 26 },
+      sweet: 0.85, temp: 'tibio', herb: 0.45, patience: 30 },
     { id: 'ruben', name: 'Tano Rubén', skin: '#e9b98f', hair: '#3a2a20', hairStyle: 'bald', shirt: '#2f5ea6', mustache: '#3a2a20',
-      sweet: 0.05, temp: 'caliente', herb: 0.15, patience: 20 },
+      sweet: 0.05, temp: 'caliente', herb: 0.15, patience: 24 },
     { id: 'brian', name: 'Brian', skin: '#d9a27a', hair: '#2a1a10', hairStyle: 'gorra', hat: '#d33b2c', shirt: '#75aadb', stripes: true,
-      sweet: 0.7, temp: 'justo', herb: 0.1, patience: 18 },
+      sweet: 0.7, temp: 'justo', herb: 0.1, patience: 22 },
     { id: 'rosa', name: 'Doña Rosa', skin: '#f0c19a', hair: '#8a3320', hairStyle: 'curly', shirt: '#e07a3f', earrings: true,
-      sweet: 0.5, temp: 'tibio', herb: 0.5, patience: 24 },
+      sweet: 0.5, temp: 'tibio', herb: 0.5, patience: 28 },
     { id: 'ramon', name: 'Don Ramón', skin: '#c98d62', hair: '#9a9a9a', hairStyle: 'boina', hat: '#1f1f2a', shirt: '#c9b48a', mustache: '#cfcfcf', scarf: '#c0392b',
-      sweet: 0.0, temp: 'caliente', herb: 0.7, patience: 22 },
+      sweet: 0.0, temp: 'caliente', herb: 0.7, patience: 26 },
     { id: 'mirta', name: 'La Profe Mirta', skin: '#f2d2b6', hair: '#c9b27a', hairStyle: 'short', shirt: '#3f8f6e', glasses: true,
-      sweet: 0.3, temp: 'justo', herb: 0.3, patience: 21 },
+      sweet: 0.3, temp: 'justo', herb: 0.3, patience: 25 },
     { id: 'facu', name: 'Facu', skin: '#e3b38c', hair: '#3b2616', hairStyle: 'long', shirt: '#2b2b2b', beard: '#3b2616',
-      sweet: 0.1, temp: 'justo', herb: 0.2, patience: 19 },
+      sweet: 0.1, temp: 'justo', herb: 0.2, patience: 23 },
     { id: 'cami', name: 'Cami', skin: '#f5d0b5', hair: '#e0a93c', hairStyle: 'ponytail', shirt: '#f2c94c',
-      sweet: 0.6, temp: 'tibio', herb: 0.3, patience: 20 },
+      sweet: 0.6, temp: 'tibio', herb: 0.3, patience: 24 },
   ];
 
   const SUEGRA = { id: 'suegra', name: 'La Suegra', skin: '#efc6a6', hair: '#7d6a8f', hairStyle: 'curly', shirt: '#b22d4a', glasses: true, earrings: true,
-    sweet: 0.5, temp: 'justo', herb: 0.5, patience: 15, special: true };
+    sweet: 0.5, temp: 'justo', herb: 0.5, patience: 19, special: true };
 
   const LINES = {
     greet: ['¿Hay mate?', '¡Cebame uno, che!', '¿Se arma una ronda?', '¡Pasá el mate!', 'Uno y me voy... mentira.', '¿Me convidás uno?'],

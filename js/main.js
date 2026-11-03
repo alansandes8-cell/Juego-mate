@@ -222,7 +222,7 @@
   const HOW = [
     ['yerba', 'Yerba', 'Mantené apretado sobre el mate. Unos ¾ está joya: poca se lava rápido, mucha tapa la bombilla.'],
     ['bombilla', 'Bombilla', 'Ponela en el hueco. Y después... ¡NUNCA se mueve la bombilla!'],
-    ['pava', 'El agua', 'Prendé el fuego y mirá el termómetro. Entre 65° y 90°, según el gusto. ¡Si hierve, cambiala!'],
+    ['pava', 'El agua', 'Prendé el fuego y mirá el termómetro. Entre 64° y 90°, según el gusto. ¡Si hierve, cambiala!'],
     ['pava', 'Cebar', 'Con la pava, mantené apretado en el hueco, al lado de la bombilla. Llenalo sin rebalsar. Si mojás la montañita se lava antes.'],
     ['mate', 'El primero', 'El primer mate de la yerba nueva es del cebador: tocá "Me lo tomo yo".'],
     ['azucar', 'Dulce o amargo', 'El azúcar queda en la yerba hasta que la cambies. Ojo con los que toman amargo...'],
@@ -252,6 +252,7 @@
   // -------- resumen del día --------
   function goSummary(s) {
     sum = s;
+    if (Play.state) run = Play.state.run;
     Sfx.silenceLoops();
     run.bizcochos = false;
     if (s.passed) {

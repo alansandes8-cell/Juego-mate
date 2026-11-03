@@ -13,9 +13,9 @@
   const HORNALLA = { x: 560, y: 902 };
   const THERMO = { x: 690, top: 600, bot: 880 };
   const TEMP = {
-    tibio: { lo: 65, hi: 74, label: 'Tibio 65-74°', col: '#3fa7d6' },
-    justo: { lo: 74, hi: 83, label: 'Justo 74-83°', col: '#3aa655' },
-    caliente: { lo: 82, hi: 90, label: 'Caliente 82-90°', col: '#e07b1a' },
+    tibio: { lo: 64, hi: 75, label: 'Tibio 64-75°', col: '#3fa7d6' },
+    justo: { lo: 72, hi: 84, label: 'Justo 72-84°', col: '#3aa655' },
+    caliente: { lo: 80, hi: 90, label: 'Caliente 80-90°', col: '#e07b1a' },
   };
   const TOOLS = [
     { id: 'yerba', label: 'Yerba', key: '1' },
@@ -54,11 +54,11 @@
       infl,
       price: 100 * infl,
       yerbaCost: 150 * infl,
-      meta: Math.round((420 * Math.pow(1.32, day - 1)) / 10) * 10,
+      meta: Math.round((280 * Math.pow(1.42, day - 1)) / 10) * 10,
       dayLen: day === 1 ? 100 : 120,
       timeLeft: day === 1 ? 100 : 120,
       nSeats: day === 1 ? 2 : 3,
-      patMul: Math.max(0.6, 1 - 0.06 * (day - 1)) * (run.bizcochos ? 1.4 : 1) * (day === 1 ? 1.35 : 1),
+      patMul: Math.max(0.65, 1 - 0.05 * (day - 1)) * (run.bizcochos ? 1.4 : 1) * (day === 1 ? 1.35 : 1),
       tool: 'yerba',
       mate: freshMate(),
       pava: { temp: 22, fire: false, boiled: false },
@@ -461,7 +461,7 @@
         }
       }
     } else {
-      const k = G.run.upgrades.termo ? 0.0035 : 0.016;
+      const k = G.run.upgrades.termo ? 0.004 : 0.028;
       p.temp -= (p.temp - 22) * k * dt * 1.0;
     }
     Sfx.setFire(p.fire);
